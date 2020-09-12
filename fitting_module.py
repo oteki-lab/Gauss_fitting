@@ -14,7 +14,7 @@ np.set_printoptions(precision=1) #numpyの表示桁数指定
 class Fit:
     """ フィッティング """
 
-    def __init__(self, filename, guess, background):
+    def __init__(self, filename, guess, bounds, background):
         self.filename = filename
         self.df = pd.read_csv(filename+'.csv')
         self.x, self.y = map(lambda i: self.df[self.df.columns[i]], list(range(len(self.df.columns))))
@@ -30,7 +30,7 @@ class Fit:
         print("初期値：", self.guess_all, ",    mean：", mae)
 
         #フィッティングを実行
-        self.popt, self.pcov = curve_fit(self.func, self.x, self.y, p0=self.guess_all, maxfev=10000) #パラメーター, 共分散
+        self.popt, self.pcov = curve_fit(self.func, self.x, self.y, p0=self.guess_all, maxfev=10000, bounds=bounds) #パラメーター, 共分散
 
         #フィッティングしたのパラメーターとMAE
         self.y_total, self.mae = self.superposition(self.x, self.y, *self.popt)   #ガウス関数の重ね合わせ, 平均絶対誤差
